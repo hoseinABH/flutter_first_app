@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 
 class Result extends StatelessWidget {
-  final Function tryAgainHandler;
-  Result(this.tryAgainHandler);
+  final VoidCallback tryAgainHandler;
+  final int totalScore;
+  Result(this.tryAgainHandler, this.totalScore);
+
+  String get resultPhrase {
+    var resultText = 'you did it 💪';
+    if (totalScore > 20) {
+      return resultText;
+    } else {
+      return 'you fail';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -10,12 +21,12 @@ class Result extends StatelessWidget {
       margin: EdgeInsets.only(top: 36),
       child: Column(
         children: [
-          Text('you did it !'),
-          RaisedButton(
-            onPressed: () => tryAgainHandler(),
+          Text(resultPhrase),
+          Text('total score is:$totalScore'),
+          OutlineButton(
             child: Text('Try again'),
-            color: Colors.blue,
-            textColor: Colors.white,
+            onPressed: tryAgainHandler,
+            textColor: Colors.blue,
           )
         ],
       ),
