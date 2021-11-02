@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use, prefer_const_constructors
 
-import 'package:first_app/answer.dart';
-import 'package:first_app/question.dart';
+import 'package:first_app/quiz.dart';
+import 'package:first_app/result.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final questions = const [
+  final _questions = const [
     {
       'questionText': 'What\'s your favorite color?',
       'answers': ['Black', 'Red', 'Green', 'White'],
@@ -33,11 +33,17 @@ class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
 
   void _answerQuestion(int id) {
-    if (_questionIndex < questions.length) {
+    if (_questionIndex < _questions.length) {
       setState(() {
         _questionIndex = _questionIndex + 1;
       });
     }
+  }
+
+  void _retryQuiz() {
+    setState(() {
+      _questionIndex = 0;
+    });
   }
 
   @override
@@ -49,33 +55,11 @@ class _MyAppState extends State<MyApp> {
                 'hello flutter',
               ),
             ),
-            body: _questionIndex < 3
-                ? Column(
-                    children: <Widget>[
-                      Question(
-                          questions[_questionIndex]['questionText'] as String),
-                      ...(questions[_questionIndex]['answers'] as List<String>)
-                          .map((answer) {
-                        return Answer(_answerQuestion, answer);
-                      }).toList(),
-                    ],
-                  )
-                : Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(top: 36),
-                    child: Column(
-                      children: [
-                        Text('you did it'),
-                        RaisedButton(
-                          onPressed: () => setState(() {
-                            _questionIndex = 0;
-                          }),
-                          child: Text('Try again'),
-                          color: Colors.blue,
-                          textColor: Colors.white,
-                        )
-                      ],
-                    ),
-                  )));
+            body: _questionIndex < _questions.length
+                ? Quiz(
+                    answerQuestion: _answerQuestion,
+                    questions: _questions,
+                    questionIndex: _questionIndex)
+                : Result(_retryQuiz)));
   }
 }
